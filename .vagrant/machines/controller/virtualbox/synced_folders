@@ -1,0 +1,1 @@
+{"virtualbox":{"/mnt/components/":{"guestpath":"/mnt/components","hostpath":"/home/siltu/Projects/practice/v4-test","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/siltu/Projects/practice/v4-test/email-ui","disabled":false,"__vagrantfile":true}}}
