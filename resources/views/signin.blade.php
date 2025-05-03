@@ -5,7 +5,7 @@
 <head>
 
     <meta charset="utf-8">
-    <title>Triophase</title>
+    <title>Emailcluster</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Fonts css load -->

@@ -1,2 +1,7 @@
 
 /*# sourceMappingURL=custom.min.css.map */
+#page-topbar{left: 0 !important;}
+.footer{left: 0 !important;}
+.page-content .container-fluid{
+    max-width: 90%;
+}

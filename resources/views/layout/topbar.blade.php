@@ -232,15 +232,14 @@
                                 <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/avatar-3.jpg') }}"
                                     alt="Header Avatar">
                                 <span class="text-start ms-xl-2">
-                                    <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">Richard
-                                        Marshall</span>
-                                    <span class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">Founder</span>
+                                    <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ Auth::user()->email }}</span>
+                                    <span class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">Email User</span>
                                 </span>
                             </span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <h6 class="dropdown-header">Welcome Richard!</h6>
+                            <h6 class="dropdown-header">Welcome {{ Auth::user()->email }}!</h6>
                             <a class="dropdown-item" href="#"><i
                                     class="mdi mdi-account-circle text-muted fs-lg align-middle me-1"></i> <span
                                     class="align-middle">Profile</span></a>

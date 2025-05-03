@@ -23,30 +23,25 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="compnayNameinput" class="form-label">Select User</label>
-                                <select class="form-control" id="wildduck_userid" name="wildduck_userid" required>
-                                <option value="" disabled selected>Select User</option>
-                                <option value="{{ $wildduck_user->wildduck_userid }}">{{ $wildduck_user->username }}</option>
-                                </select>
+                                <label for="compnayNameinput" class="form-label">Password</label>
+                                <input type="password" class="form-control" placeholder="enter password" id="password" name="password" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="compnayNameinput" class="form-label">Select Ip</label>
-                                <select class="form-control" id="zone_ip" name="zone_ip">
-                                <option value="" disabled selected>Select Ip</option>
-                                <option value="15.204.75.8">15.204.75.8</option>
-                                </select>
+                                <label for="compnayNameinput" class="form-label">Confirm Password</label>
+                                <input type="confirm_password" class="form-control" placeholder="Confirm Password" id="confirm_password" name="confirm_password" required>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <span id="message" style="color:red;"></span><br>
+                        
+                        <div class="col-lg-12 col-md-6">
                             <div class="mb-3">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" id="formCheck1" name="id_default">
-                                    <label class="form-check-label" for="formCheck1">
-                                        is default?
-                                    </label>
-                                </div>
+                                <label for="choices-multiple-remove-button" class="form-label text-muted">Select IPs</label>
+                                <select class="form-control" id="ips" name="ips" data-choices data-choices-removeItem name="choices-multiple-remove-button" multiple>
+                                    <!-- <option value="15.204.28.113" selected>15.204.28.113</option>
+                                    <option value="15.204.14.108">15.204.14.108</option> -->
+                                </select>
                             </div>
                         </div>
                         <div class="col-lg-12">

@@ -21,7 +21,7 @@
                                 <td></td>
                                 <td>
                                     <div>
-                                        <input type="text" class="form-control" id="disabledInput" value="v=spf1 ip4:15.204.75.8 -all" disabled="">
+                                        <input type="text" class="form-control" id="disabledInput" value="v=spf1 ip4:15.204.28.113 -all" disabled="">
                                     </div>
                                 </td>
                                 <td>Auto</td>
@@ -149,7 +149,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <input type="text" class="form-control" id="disabledInput" value="15.204.75.8" disabled="">
+                                    <input type="text" class="form-control" id="disabledInput" value="15.204.28.113" disabled="">
                                 </div>
                             </td>
                             <td>Auto</td>

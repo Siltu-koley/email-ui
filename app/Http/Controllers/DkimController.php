@@ -7,6 +7,8 @@ use App\Services\DkimService;
 use App\Models\Domain;
 use App\Models\DkimKey;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
+
 
 class DkimController extends Controller
 {
@@ -47,5 +49,35 @@ class DkimController extends Controller
         else{
             return response()->json(array("status"=>false, "meaasge"=>"Domain not found"));
         }
+    }
+
+    public function getDkim(Request $request) {
+        Log::info('DKIM Request Received', $request->all());
+        // Expected fields from ZoneMTA
+        // $from = $request->input('from');
+        // $user = $request->input('user');
+        // $origin = $request->input('origin');
+        // $transtype = $request->input('transtype');
+        $domain = $request->input('fromdomain');
+
+        // Extract domain from MAIL FROM address
+        // $domain = substr(strrchr($from, "@"), 1);
+
+        // Find the DKIM key from the DB for this domain
+        $dkimKey = DkimKey::where('domain', $domain)->first();
+
+        if (!$dkimKey) {
+            return response()->json([]); // No DKIM config — nothing will be signed
+        }
+
+        return response()->json([
+            'dkim' => [
+                'keys' => [
+                    'domainName'  => $dkimKey->domain,
+                    'keySelector' => $dkimKey->selector,
+                    'privateKey'  => $dkimKey->private_key
+                ]
+            ]
+        ]);
     }
 }

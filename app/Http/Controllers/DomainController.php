@@ -10,6 +10,7 @@ use App\Models\DkimKey;
 use App\Models\UserEmail;
 use App\Models\WildduckAccesstoken;
 use App\Models\WildDuckUser;
+use Illuminate\Support\Facades\DB;
 
 class DomainController extends Controller
 {
@@ -48,39 +49,69 @@ class DomainController extends Controller
     public function emaillist(Request $request) {
         $domain_id = $request->route('domain_id');
         $domains = Domain::where('id',$domain_id)->first();
-        $emails = UserEmail::where('domain_id',$domains->id)->get();
+
+        // $emails = UserEmail::where('domain_id',$domains->id)->get();
+        // $wd_user = WildDuckUser::where('userid',$emails->userid)->get();
+
+        $emails = DB::table('user_emails')
+                ->join('wild_duck_users', 'user_emails.userid', '=', 'wild_duck_users.user_id')
+                ->where('user_emails.domain_id', $domains->id)
+                ->select('user_emails.*', 'wild_duck_users.username','wild_duck_users.password')
+                ->get();
         return view('emaillist',compact('domains','emails'));
     }
 
     public function storeMail(Request $request) {
         $content = $request->post();
-        $data = array(
-            "address" => $content['emailstring']."@".$content['emaildomain'],
-            "main" => false,
-            "allowWildcard" => false
-        );
-        $user_id = Auth::user()->id;
-        $access_token = WildduckAccesstoken::where("user_id",$user_id)->first();
-        $wildduckuser = WildDuckUser::where("user_id",$user_id)->first();
-        $wildduck_userid = $content['wildduck_userid'];
-        $url = env('WILDDUCK_URL')."/users/".$wildduck_userid."/addresses";
-        $header = array(
-            'Content-Type: application/json',
-            'Accept: application/json',
-            'X-Access-Token: '.$access_token->access_token
-        );
-        $create_mail = curlPost($url,$data,$header);
-        $create_result = json_decode($create_mail, true);
-        if($create_result['success']){
-            $add_mail = new UserEmail;
-            $add_mail->userid = $user_id;
-            $add_mail->wildduck_userid = $wildduckuser->wildduck_userid;
-            $add_mail->domain_id = $content['domain_id'];
-            $add_mail->email = $content['emailstring']."@".$content['emaildomain'];
-            $add_mail->main = isset($content['emailstring']) ? 1 : 0;
-            $add_mail->save();
+
+        $hashedPassword = bcrypt($request->input('password'));
+        $email = $content['emailstring']."@".$content['emaildomain'];
+        $password = $content['password'];
+        // Create the new user
+        $user = User::create([
+            'name' => $email,
+            'email' => $email,
+            'password' => $hashedPassword,
+        ]);
+        $createwildduck_user = $this->createwildduck_user($email,$password);
+        $result = json_decode($createwildduck_user, true);
+        if(isset($result['success']) && $result['success']){
+            $add_user = new WildDuckUser();
+            $add_user->user_id = Auth::user()->id;
+            $add_user->username = $email;
+            $add_user->password = $request->input('password');
+            $add_user->wildduck_userid = $result['id'];
+            $add_user->default_mail = $email;
+            $add_user->save();
+
+            $add_useremail = new UserEmail();
+            $add_useremail->userid = Auth::user()->id;
+            $add_useremail->wildduck_userid = $result['id'];
+            $add_useremail->domain_id = $content['domain_id'];
+            $add_useremail->email = $email;
+            $add_useremail->main = true;
+            $add_useremail->allowWildcard = false;
+            $add_useremail->save();
             return(array("success"=>true));
         }
         return(array("success"=>false, "message"=>"Something went wrong"));
+    }
+
+    public function createwildduck_user($email,$password) {
+        $data = array(
+            "username" => $email,
+            "password" => $password,
+            "hashedPassword" => false,
+            "allowUnsafe" => true,
+            "address" => $email
+        );
+        $url = env('WILDDUCK_URL')."/users";
+        $header = array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            // 'X-Access-Token: '.$access_token->access_token
+        );
+        $create_user = curlPost($url,$data,$header);
+        return $create_user;
     }
 }

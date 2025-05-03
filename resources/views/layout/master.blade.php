@@ -6,7 +6,7 @@
 
 <body>
 
-@include('layout/sidebar')
+
 @include('layout/topbar')
 @include('layout/footer')
 @yield('content')

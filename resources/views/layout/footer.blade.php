@@ -3,11 +3,11 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6">
-                            <script>document.write(new Date().getFullYear())</script> © Triophase.
+                            <script>document.write(new Date().getFullYear())</script> © xyz.
                         </div>
                         <div class="col-sm-6">
                             <div class="text-sm-end d-none d-sm-block">
-                                Design & Develop by Triophase
+                                Design & Develop by xyz
                             </div>
                         </div>
                     </div>
@@ -56,10 +56,12 @@
     <script src="{{ asset('assets/js/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/swiper.init.js') }}"></script>
 
+    <script src="{{ asset('assets/libs/prismjs/prism.js') }}"></script>
+
 <!-- for mailbox -->
     <script src="{{ asset('assets/js/list.min.js') }}"></script>
     <script src="{{ asset('assets/js/list.pagination.min.js') }}"></script>
     <script src="{{ asset('assets/js/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/js/dashboard-crm.init.js') }}"></script>
     <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
-    <script src="{{ asset('assets/js/mailbox.init.js') }}"></script>
+    <!-- <script src="{{ asset('assets/js/mailbox.init.js') }}"></script> -->

@@ -27,6 +27,7 @@ Route::get('/add_mail/{domain_id}', [DomainController::class, 'createMail'])->na
 Route::post('/create_mail', [DomainController::class, 'storeMail'])->name('create_mail');
 Route::post('/generate-dkim', [DkimController::class, 'generate']);
 Route::get('/mailbox/{email_id}', [EmailController::class, 'mailbox'])->name('mailbox');
+Route::post('/sendmail', [EmailController::class, 'sendmail'])->name('sendmail');
 
 Route::get('/logout', function () {
     Auth::logout();
