@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('domain_name');
             $table->unsignedBigInteger('created_by');
-            $table->integer('maximum_user')->default(0);
-            $table->integer('maximum_alias')->default(0);
-            $table->text('comment')->nullable();
+            $table->string('zone')->nullable();
+            $table->text('default_ips')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

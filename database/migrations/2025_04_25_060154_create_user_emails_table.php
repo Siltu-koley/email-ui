@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('user_emails', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('userid');
-            $table->unsignedBigInteger('wildduck_userid');
+            $table->string('wildduck_userid');
             $table->unsignedBigInteger('domain_id');
             $table->string('email');
+            $table->text('routing_ips')->nullable();
             $table->integer('main')->default(1);
             $table->integer('allowWildcard')->default(0);
             $table->text('tags')->nullable();
@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('internalData')->nullable();
             $table->string('sess')->nullable();
             $table->string('ip')->nullable();
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });
     }

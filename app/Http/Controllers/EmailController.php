@@ -2,9 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Domain;
+use App\Models\Filter;
+use App\Models\Routingip;
 use App\Models\UserEmail;
 use App\Models\WildduckAccesstoken;
+use App\Models\WildDuckUser;
+use App\Models\Zone;
+use Faker\Core\File;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EmailController extends Controller
 {
@@ -131,5 +139,264 @@ $inbox_result = json_decode($inbox_result, true);
         }else{
             return array("success"=>false);
         }
+    }
+
+    public function getIp(Request $request) {
+        $email = $request->route('email');
+        $get_mail_ip = UserEmail::where('email', $email)->first();
+        $filters = Filter::where('status',1)->get();
+        foreach($filters as $filter){
+            $filter_arr[] = $filter->filter;
+        }
+        if($get_mail_ip){
+            $ips = $get_mail_ip->routing_ips;
+            if($ips != '' && $ips != '[]' && $ips != null){
+                $ip_arr = json_decode($ips, true);
+            }else{
+                $domains = Domain::where('id',$get_mail_ip->domain_id)->first();
+                $domain_ips = $domains->default_ips;
+                if($domain_ips != '' && $domain_ips != '[]' && $domain_ips != null){
+                    $ip_arr = json_decode($domain_ips, true);
+                }else{
+                    return response()->json([
+                        'success' => false,
+                        'message' => "No ip found"
+                    ]);
+                }
+            }
+            $randomIp = $ip_arr[array_rand($ip_arr)];
+            return response()->json([
+            'success' => true,
+            'ip' => $randomIp,
+            'filters' => [json_encode($filter_arr,JSON_UNESCAPED_SLASHES)],
+            'header_filter' => $filter_arr
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => "Email not found"
+                ]);
+        }
+        
+        
+    }
+
+    public function emailconfig(Request $request) {
+        $email_id = $request->route('email_id');
+        $emails = DB::table('user_emails')
+                ->join('wild_duck_users', 'user_emails.wildduck_userid', '=', 'wild_duck_users.wildduck_userid')
+                ->where('user_emails.id', $email_id)
+                ->select('user_emails.*','user_emails.email as email_id','user_emails.id as user_emails_id', 'wild_duck_users.username','wild_duck_users.password')
+                ->first();
+        $domain = Domain::where('id', $emails->domain_id)->first();
+        $ips = Routingip::select('ip')
+                        ->where('zone_id', $domain->zone)
+                        ->where('status', 1)->get();
+        $ip_array = array();
+        foreach ($ips as $ip) {
+            $ip_array[] = $ip->ip;
+        }
+        return view('emailconfig',compact('emails','ip_array'));
+    }
+
+    public function add_routing_ip(Request $request) {
+        $emails_id = $request->post('emails_id');
+        $routing_ip = $request->post('routing_ip');
+        $getip = UserEmail::find($emails_id);
+        if($getip){
+        $new_ips = array();
+        if($getip->routing_ips != ''){
+            $ip_arr = json_decode($getip->routing_ips, true);
+            if(in_array($routing_ip, $ip_arr))
+                {
+                    return ['status' => false,'message' => 'IP already exists'];
+                }
+            array_push($ip_arr,$routing_ip);
+            $getip->routing_ips = json_encode($ip_arr);
+        }else{
+            array_push($new_ips,$routing_ip);
+            $getip->routing_ips = json_encode($new_ips);
+        }
+        
+        
+        $getip->save();
+        return ['status' => true,'message' => 'Route ip updated'];
+    }else{
+        return ['status' => false,'message' => 'Email not found'];
+    }
+    }
+
+    public function remove_routing_ip(Request $request) {
+        $emails_id = $request->post('emails_id');
+        $routing_ip = $request->post('routing_ip');
+        $getip = UserEmail::find($emails_id);
+        if($getip){
+        if($getip->routing_ips != ''){
+            $ip_arr = json_decode($getip->routing_ips, true);
+            if(!in_array($routing_ip, $ip_arr))
+                {
+                    return ['status' => false,'message' => 'IP already removed'];
+                }
+            $ips = array_diff($ip_arr, [$routing_ip]); 
+            $ips = array_values($ips);
+            $getip->routing_ips = json_encode($ips);
+            $getip->save();
+            return ['status' => true,'message' => 'Route ip removed'];
+        }else{
+            return ['status' => false,'message' => 'No ip found'];
+        }
+    }else{
+        return ['status' => false,'message' => 'Email not found'];
+    }
+    }
+    public function ZonesIp(Request $request) {
+        $zones = Zone::where('status', 1)->get();
+        foreach($zones as $zone){
+            $ips = Routingip::where('zone_id', $zone->id)
+                        ->where('status', 1)->get();
+            $ip_array = array();
+            foreach ($ips as $ip) {
+                $ip_array[] = $ip->ip;
+            }
+            $data['id'] = $zone->id;
+            $data['zone'] = $zone->zone;
+            $data['ips'] = $ip_array;
+        }
+        $zonedata[] = $data;
+        return view('zonesip',compact('zonedata'));
+    }
+    public function update_smtp_pass(Request $request) {
+        $email_id = $request->post('email_id');
+        $newpassword = $request->post('newpassword');
+        $hashedPassword = bcrypt($newpassword);
+        $useremail = UserEmail::find($email_id);
+        $wld_user = WildDuckUser::where('wildduck_userid', $useremail->wildduck_userid)->first();
+        $update_wdpass = $this->updatewdpass($wld_user->password,$newpassword,$useremail->wildduck_userid);
+        $result = json_decode($update_wdpass, true);
+        if(isset($result['success']) && $result['success']){
+            $wld_user->password = $newpassword;
+            $wld_user->hashed_password = $hashedPassword;
+            $wld_user->save();
+            return ['status' => true,'message' => 'SMTP password updated'];
+        }else{
+            return ['status' => false,'message' => 'Something went wrong'];
+        }
+    }
+
+    public function updatewdpass($password,$newpassword,$wildduck_userid) {
+        $data = array(
+            "existingPassword" => $password,
+            "password" => $newpassword
+        );
+
+        $url = env('WILDDUCK_URL')."/users/".$wildduck_userid;
+        $header = array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+            // 'X-Access-Token: '.$access_token->access_token
+        );
+        $updatepass = curlPost($url,$data,$header);
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => $url,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'PUT',
+          CURLOPT_POSTFIELDS =>json_encode($data),
+          CURLOPT_HTTPHEADER => $header,
+        ));
+        
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
+
+    public function addFilter(Request $request) {
+        $filterregex = $request->post('filterregex');
+        $filter = new Filter;
+        $filter->filter = $filterregex;
+        $filter->created_by = Auth::user()->id;
+        $filter->save();
+        return redirect()->back();
+    }
+    public function filter(Request $request) {
+        $filters = Filter::where('status',1)->get();
+        return view('filters', compact('filters'));
+    }
+    public function editFilter(Request $request) {
+        $filterregex = $request->post('editfilterregex');
+        $regex_id = $request->post('regex_id');
+        $filter = Filter::where('id',$regex_id)->first();
+        $filter->filter = $filterregex;
+        $filter->created_by = Auth::user()->id;
+        $filter->save();
+        return redirect()->back();
+    }
+    public function deleteFilter(Request $request) {
+        $filter_id = $request->route('filter_id');
+        $filter = Filter::find($filter_id);
+        
+        if ($filter) {
+            $filter->delete();
+            return ['status'=>true, 'message' => 'Filter deleted successfully'];
+        }
+        
+        return ['status'=>false, 'message' => 'Filter not found'];
+    }
+
+    public function deleteMail(Request $request) {
+        $email_id = $request->route('email_id');
+        
+        $useremail = UserEmail::find($email_id);
+    
+        if ($useremail) {
+            $wd_user = WildDuckUser::where('wildduck_userid', $useremail->wildduck_userid)->first();
+            if($wd_user){
+                $deletewildduck_user = $this->deleteWduser($useremail->wildduck_userid);
+                $result = json_decode($deletewildduck_user, true);
+                if(isset($result['success']) && $result['success']){
+                    $useremail->delete();
+                    $wd_user->delete();
+                    return ['status'=>true, 'message' => 'Email deleted successfully'];
+                }else{
+                    return ['status'=>false, 'message' => 'something wrong on wildduck'];
+                }
+
+            }
+        }
+        
+        return ['status'=>false, 'message' => 'Email not found'];
+    }
+
+    public function deleteWduser($wildduck_userid) {
+
+        $url = env('WILDDUCK_URL')."/users/".$wildduck_userid;
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'DELETE',
+        CURLOPT_HTTPHEADER => array(
+            'Accept: application/json',
+            // 'X-Access-Token: <X-Access-Token>'
+        ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
     }
 }

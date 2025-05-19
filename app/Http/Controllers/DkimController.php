@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Services\DkimService;
 use App\Models\Domain;
 use App\Models\DkimKey;
+use App\Models\UserEmail;
+use App\Models\Mailcount;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
+// use Illuminate\Support\Facades\Log;
 
 
 class DkimController extends Controller
@@ -52,16 +54,32 @@ class DkimController extends Controller
     }
 
     public function getDkim(Request $request) {
-        Log::info('DKIM Request Received', $request->all());
+        // Log::info('DKIM Request Received', $request->all());
         // Expected fields from ZoneMTA
         // $from = $request->input('from');
         // $user = $request->input('user');
         // $origin = $request->input('origin');
         // $transtype = $request->input('transtype');
         $domain = $request->input('fromdomain');
+        if($request->input('fromemail') && $request->input('fromemail') != null){
+            $email = $request->input('fromemail');
+            $usermail = UserEmail::where('email', $email)->first();
+                $mailcount = Mailcount::where('email_id', $usermail->id)->first();
+                if ($mailcount) {
+                    $mailcount->increment('sent');
+                } else {
+                    Mailcount::create([
+                        'email_id' => $usermail->id,
+                        'domain_id' => $usermail->domain_id,
+                        'sent' => 1,
+                    ]);
+                }
+        }
+        
 
         // Extract domain from MAIL FROM address
         // $domain = substr(strrchr($from, "@"), 1);
+
 
         // Find the DKIM key from the DB for this domain
         $dkimKey = DkimKey::where('domain', $domain)->first();

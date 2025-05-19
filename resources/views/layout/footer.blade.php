@@ -2,12 +2,12 @@
     <footer class="footer">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <!-- <div class="col-sm-6">
                             <script>document.write(new Date().getFullYear())</script> © xyz.
-                        </div>
-                        <div class="col-sm-6">
+                        </div> -->
+                        <div class="col-sm-12">
                             <div class="text-sm-end d-none d-sm-block">
-                                Design & Develop by xyz
+                                Powered by Triophase
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,43 @@
 <!-- for mailbox -->
     <script src="{{ asset('assets/js/list.min.js') }}"></script>
     <script src="{{ asset('assets/js/list.pagination.min.js') }}"></script>
-    <script src="{{ asset('assets/js/apexcharts.min.js') }}"></script>
+    <!-- <script src="{{ asset('assets/js/apexcharts.min.js') }}"></script> -->
     <script src="{{ asset('assets/js/dashboard-crm.init.js') }}"></script>
-    <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
+    <!-- <script src="{{ asset('assets/js/ckeditor.js') }}"></script> -->
     <!-- <script src="{{ asset('assets/js/mailbox.init.js') }}"></script> -->
+     <script>
+        $(document).on('click', '#update_password', function(){
+//             let userid = "<?php
+
+// use Illuminate\Support\Facades\Auth;
+
+//  echo Auth::user()->id ?>";
+        $("#updatepassModal").modal("show");
+
+        });
+
+        $(document).on('submit', '#updatepassForm', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: '/update_pass',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#updatepassModal').modal('hide');
+                        $('#updatepassForm')[0].reset();
+                        alert(response.message);
+                        // location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.responseText);
+                    alert('There was an error while submitting the form');
+                }
+            });
+        });
+     </script>

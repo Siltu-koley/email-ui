@@ -1,5 +1,7 @@
 <?php
-   
+
+use App\Models\User;
+use App\Models\Mailcount;
 use Carbon\Carbon;
   
 /**
@@ -78,5 +80,20 @@ if (! function_exists('curlGet')) {
 
         curl_close($curl);
         return $response;
+    }
+
+    function getuser($user_id){
+        $user = User::find($user_id);
+        return $user;
+    }
+
+    function emailcout($email_id) {
+        $emailcount = Mailcount::where('email_id', $email_id)->first();
+        if($emailcount){
+            return $emailcount->sent;
+        }else{
+            return '0';
+        }
+        
     }
 }

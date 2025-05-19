@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wild_duck_users', function (Blueprint $table) {
+        Schema::create('zones', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->string('hashed_password');
-            $table->string('wildduck_userid');
-            $table->string('default_mail')->nullable();
+            $table->string('zone');
             $table->integer('status')->default(1);
             $table->timestamps();
         });
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wild_duck_users');
+        Schema::dropIfExists('zones');
     }
 };

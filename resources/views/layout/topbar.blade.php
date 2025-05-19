@@ -6,246 +6,41 @@
                 <div class="d-flex">
                     <!-- LOGO -->
 
-                    <button type="button"
-                        class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger shadow-none"
-                        id="topnav-hamburger-icon">
-                        <span class="hamburger-icon">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </span>
-                    </button>
-
-                    <form class="app-search d-none d-md-inline-flex">
-                        <div class="position-relative">
-                            <input type="text" class="form-control" placeholder="Search..." autocomplete="off"
-                                id="search-options" value="">
-                            <span class="mdi mdi-magnify search-widget-icon"></span>
-                            <span class="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none"
-                                id="search-close-options"></span>
-                        </div>
-                        <div class="dropdown-menu dropdown-menu-lg" id="search-dropdown">
-                            <div data-simplebar style="max-height: 320px;">
-                                <!-- item-->
-                                <div class="dropdown-header">
-                                    <h6 class="text-overflow text-muted mb-0 text-uppercase">Recent Searches</h6>
-                                </div>
-
-                                <div class="dropdown-item bg-transparent text-wrap">
-                                    <a href="index.html" class="btn btn-subtle-secondary btn-sm btn-rounded">how to
-                                        setup <i class="mdi mdi-magnify ms-1"></i></a>
-                                    <a href="index.html" class="btn btn-subtle-secondary btn-sm btn-rounded">buttons
-                                        <i class="mdi mdi-magnify ms-1"></i></a>
-                                </div>
-                                <!-- item-->
-                                <div class="dropdown-header mt-2">
-                                    <h6 class="text-overflow text-muted mb-1 text-uppercase">Pages</h6>
-                                </div>
-
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <i class="ri-bubble-chart-line align-middle fs-18 text-muted me-2"></i>
-                                    <span>Analytics Dashboard</span>
-                                </a>
-
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <i class="ri-lifebuoy-line align-middle fs-18 text-muted me-2"></i>
-                                    <span>Help Center</span>
-                                </a>
-
-                                <!-- item-->
-                                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                    <i class="ri-user-settings-line align-middle fs-18 text-muted me-2"></i>
-                                    <span>My account settings</span>
-                                </a>
-
-                                <!-- item-->
-                                <div class="dropdown-header mt-2">
-                                    <h6 class="text-overflow text-muted mb-2 text-uppercase">Members</h6>
-                                </div>
-
-                                <div class="notification-list">
-                                    <!-- item -->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
-                                        <div class="d-flex">
-                                            <img src="{{ asset('assets/images/users/avatar-2.jpg') }}"
-                                                class="me-3 rounded-circle avatar-xs" alt="user-pic">
-                                            <div class="flex-1">
-                                                <h6 class="m-0">Angela Bernier</h6>
-                                                <span class="fs-2xs mb-0 text-muted">Manager</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <!-- item -->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
-                                        <div class="d-flex">
-                                            <img src="{{ asset('assets/images/users/avatar-3.jpg') }}"
-                                                class="me-3 rounded-circle avatar-xs" alt="user-pic">
-                                            <div class="flex-1">
-                                                <h6 class="m-0">David Grasso</h6>
-                                                <span class="fs-2xs mb-0 text-muted">Web Designer</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <!-- item -->
-                                    <a href="javascript:void(0);" class="dropdown-item notify-item py-2">
-                                        <div class="d-flex">
-                                            <img src="{{ asset('assets/images/users/avatar-5.jpg') }}"
-                                                class="me-3 rounded-circle avatar-xs" alt="user-pic">
-                                            <div class="flex-1">
-                                                <h6 class="m-0">Mike Bunch</h6>
-                                                <span class="fs-2xs mb-0 text-muted">React Developer</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="text-center pt-3 pb-1">
-                                <a href="#" class="btn btn-primary btn-sm">View All Results <i
-                                        class="ri-arrow-right-line ms-1"></i></a>
-                            </div>
-                        </div>
-                    </form>
                 </div>
 
                 <div class="d-flex align-items-center">
-
-                    <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
-                        <button type="button" class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle"
-                            id="page-header-notifications-dropdown" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
-                            <i class='bi bi-bell fs-2xl'></i>
-                            <span
-                                class="position-absolute topbar-badge fs-3xs translate-middle badge rounded-pill bg-danger"><span
-                                    class="notification-badge">4</span><span class="visually-hidden">unread
-                                    messages</span></span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                            aria-labelledby="page-header-notifications-dropdown">
-
-                            <div class="dropdown-head rounded-top">
-                                <div class="p-3 border-bottom border-bottom-dashed">
-                                    <div class="row align-items-center">
-                                        <div class="col">
-                                            <h6 class="mb-0 fs-lg fw-semibold"> Notifications <span
-                                                    class="badge bg-danger-subtle text-danger fs-sm notification-badge">
-                                                    4</span></h6>
-                                            <p class="fs-md text-muted mt-1 mb-0">You have <span
-                                                    class="fw-semibold notification-unread">3</span> unread messages
-                                            </p>
-                                        </div>
-                                        <div class="col-auto dropdown">
-                                            <a href="javascript:void(0);" data-bs-toggle="dropdown"
-                                                class="link-secondary fs-md"><i
-                                                    class="bi bi-three-dots-vertical"></i></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#">All Clear</a></li>
-                                                <li><a class="dropdown-item" href="#">Mark all as read</a></li>
-                                                <li><a class="dropdown-item" href="#">Archive All</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="py-2 ps-2" id="notificationItemsTabContent">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                    <h6
-                                        class="text-overflow text-muted fs-sm my-2 text-uppercase notification-title">
-                                        New</h6>
-                                    <div
-                                        class="text-reset notification-item d-block dropdown-item position-relative unread-message">
-                                        <div class="d-flex">
-                                            <div class="position-relative me-3 flex-shrink-0">
-                                                <img src="{{ asset('assets/images/avatar-1.jpg') }}"
-                                                    class="rounded-circle avatar-xs" alt="user-pic">
-                                                <span
-                                                    class="active-badge position-absolute start-100 translate-middle p-1 bg-success rounded-circle">
-                                                    <span class="visually-hidden">New alerts</span>
-                                                </span>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <a href="#!" class="stretched-link">
-                                                    <h6 class="mt-0 mb-1 fs-md fw-semibold">Angela Bernier</h6>
-                                                </a>
-                                                <div class="fs-sm text-muted">
-                                                    <p class="mb-1">Answered to your comment on the cash flow
-                                                        forecast's graph</p>
-                                                </div>
-                                                <p class="mb-0 fs-2xs fw-medium text-uppercase text-muted">
-                                                    <span><i class="mdi mdi-clock-outline"></i> 48 min ago</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <h6
-                                        class="text-overflow text-muted fs-sm my-2 text-uppercase notification-title">
-                                        Read Before</h6>
-
-                                    <div
-                                        class="text-reset notification-item d-block dropdown-item position-relative">
-                                        <div class="d-flex">
-
-                                            <div class="position-relative me-3 flex-shrink-0">
-                                                <img src="{{ asset('assets/images/avatar-8.jpg') }}"
-                                                    class="rounded-circle avatar-xs" alt="user-pic">
-                                                <span
-                                                    class="active-badge position-absolute start-100 translate-middle p-1 bg-warning rounded-circle">
-                                                    <span class="visually-hidden">New alerts</span>
-                                                </span>
-                                            </div>
-
-                                            <div class="flex-grow-1">
-                                                <a href="#!" class="stretched-link">
-                                                    <h6 class="mt-0 mb-1 fs-md fw-semibold">Maureen Gibson</h6>
-                                                </a>
-                                                <div class="fs-sm text-muted">
-                                                    <p class="mb-1">We talked about a project on linkedin.</p>
-                                                </div>
-                                                <p class="mb-0 fs-2xs fw-medium text-uppercase text-muted">
-                                                    <span><i class="mdi mdi-clock-outline"></i> 4 hrs ago</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="notification-actions" id="notification-actions">
-                                    <div class="d-flex text-muted justify-content-center align-items-center">
-                                        Select <div id="select-content" class="text-body fw-semibold px-1">0</div>
-                                        Result <button type="button" class="btn btn-link link-danger p-0 ms-2"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#removeNotificationModal">Remove</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="dropdown ms-sm-3 header-item topbar-user">
                         <button type="button" class="btn shadow-none" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="d-flex align-items-center">
-                                <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/avatar-3.jpg') }}"
+                                <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/image.png') }}"
                                     alt="Header Avatar">
                                 <span class="text-start ms-xl-2">
-                                    <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ Auth::user()->email }}</span>
-                                    <span class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">Email User</span>
+                                    <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ Auth::user()->name }} <i class="ri-arrow-down-s-line"></i></span>
+                                    <!-- <span class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">Admin User</span> -->
                                 </span>
                             </span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <h6 class="dropdown-header">Welcome {{ Auth::user()->email }}!</h6>
-                            <a class="dropdown-item" href="#"><i
-                                    class="mdi mdi-account-circle text-muted fs-lg align-middle me-1"></i> <span
-                                    class="align-middle">Profile</span></a>
+                            <h6 class="dropdown-header">Welcome {{ Auth::user()->name }}!</h6>
+                            <!-- <a class="dropdown-item" href="#"><span
+                                    class="align-middle">Update Password</span></a>
+                                    <div class="dropdown-divider"></div> -->
+                                    <a class="dropdown-item" href="{{ '/zones-ip'}}"><span
+                                    class="align-middle">Zone & ip</span></a>
+                                    <div class="dropdown-divider"></div>
+
+                                    <a class="dropdown-item" id="filter" href="{{ '/filter' }}"><span
+                                    class="align-middle">Filter</span></a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/logout"><i
-                                    class="mdi mdi-logout text-muted fs-lg align-middle me-1"></i> <span
+
+                            <a class="dropdown-item" id="update_password" href="#"><span
+                                    class="align-middle">Update Password</span></a>
+                            <div class="dropdown-divider"></div>
+
+                            <a class="dropdown-item" href="/logout"><span
                                     class="align-middle" data-key="t-logout">Logout</span></a>
                         </div>
                     </div>
