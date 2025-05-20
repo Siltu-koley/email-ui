@@ -1,0 +1,1 @@
+{"virtualbox":{"/mnt/components/":{"guestpath":"/mnt/components","hostpath":"/home/dev/Email_Cluster","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/dev/Email_Cluster/email-ui","disabled":false,"__vagrantfile":true}}}

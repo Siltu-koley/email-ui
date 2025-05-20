@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\DkimController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\Ovhcontroller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,6 +45,12 @@ Route::delete('/delete_filter/{filter_id}', [EmailController::class, 'deleteFilt
 Route::delete('/delete_mail/{email_id}', [EmailController::class, 'deleteMail']);
 Route::post('/update_pass', [AuthController::class, 'update_pass']);
 
+// OVH API
+
+Route::get('/ovh/attached_additional_ip_to_vm', [Ovhcontroller::class,'attached_additional_ip_to_vm'])->name('attached_additional_ip_to_vm');
+Route::get('/ovh/additonal_ips', [Ovhcontroller::class,'get_all_additonal_ips'])->name('get_all_additonal_ips');
+
+// OVH API End
 
 Route::get('/logout', function () {
     Auth::logout();

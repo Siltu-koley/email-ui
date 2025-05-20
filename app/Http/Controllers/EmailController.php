@@ -177,8 +177,8 @@ $inbox_result = json_decode($inbox_result, true);
                 'message' => "Email not found"
                 ]);
         }
-        
-        
+
+
     }
 
     public function emailconfig(Request $request) {
@@ -217,8 +217,8 @@ $inbox_result = json_decode($inbox_result, true);
             array_push($new_ips,$routing_ip);
             $getip->routing_ips = json_encode($new_ips);
         }
-        
-        
+
+
         $getip->save();
         return ['status' => true,'message' => 'Route ip updated'];
     }else{
@@ -237,7 +237,7 @@ $inbox_result = json_decode($inbox_result, true);
                 {
                     return ['status' => false,'message' => 'IP already removed'];
                 }
-            $ips = array_diff($ip_arr, [$routing_ip]); 
+            $ips = array_diff($ip_arr, [$routing_ip]);
             $ips = array_values($ips);
             $getip->routing_ips = json_encode($ips);
             $getip->save();
@@ -251,18 +251,24 @@ $inbox_result = json_decode($inbox_result, true);
     }
     public function ZonesIp(Request $request) {
         $zones = Zone::where('status', 1)->get();
-        foreach($zones as $zone){
-            $ips = Routingip::where('zone_id', $zone->id)
-                        ->where('status', 1)->get();
-            $ip_array = array();
-            foreach ($ips as $ip) {
-                $ip_array[] = $ip->ip;
+        if($zones->isEmpty()){
+            $zonedata=[];
+        }else{
+            foreach($zones as $zone){
+                $ips = Routingip::where('zone_id', $zone->id)
+                            ->where('status', 1)->get();
+                $ip_array = array();
+                foreach ($ips as $ip) {
+                    $ip_array[] = $ip->ip;
+                }
+                $data['id'] = $zone->id;
+                $data['zone'] = $zone->zone;
+                $data['ips'] = $ip_array;
             }
-            $data['id'] = $zone->id;
-            $data['zone'] = $zone->zone;
-            $data['ips'] = $ip_array;
+            $zonedata[] = $data;
         }
-        $zonedata[] = $data;
+
+
         return view('zonesip',compact('zonedata'));
     }
     public function update_smtp_pass(Request $request) {
@@ -310,7 +316,7 @@ $inbox_result = json_decode($inbox_result, true);
           CURLOPT_POSTFIELDS =>json_encode($data),
           CURLOPT_HTTPHEADER => $header,
         ));
-        
+
         $response = curl_exec($curl);
         curl_close($curl);
         return $response;
@@ -340,20 +346,20 @@ $inbox_result = json_decode($inbox_result, true);
     public function deleteFilter(Request $request) {
         $filter_id = $request->route('filter_id');
         $filter = Filter::find($filter_id);
-        
+
         if ($filter) {
             $filter->delete();
             return ['status'=>true, 'message' => 'Filter deleted successfully'];
         }
-        
+
         return ['status'=>false, 'message' => 'Filter not found'];
     }
 
     public function deleteMail(Request $request) {
         $email_id = $request->route('email_id');
-        
+
         $useremail = UserEmail::find($email_id);
-    
+
         if ($useremail) {
             $wd_user = WildDuckUser::where('wildduck_userid', $useremail->wildduck_userid)->first();
             if($wd_user){
@@ -369,7 +375,7 @@ $inbox_result = json_decode($inbox_result, true);
 
             }
         }
-        
+
         return ['status'=>false, 'message' => 'Email not found'];
     }
 
