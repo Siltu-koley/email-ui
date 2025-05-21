@@ -63,18 +63,34 @@ class SSH
 
     public function set_auth_key($key, $server_id)
     {
-        $key_path = '/tmp/'.md5($key).'.'.$server_id.'.rsa';
-        if(!file_exists($key_path)) {
-            if(file_exists($key)){
-                $key=file_get_contents($key);
-            }
-            echo $key;
-            Log::info("set_auth_key key=>".$key);
-            file_put_contents($key_path, $key);
-            shell_exec('chmod 0600 ' . $key_path);
-            exec('chown sail:root ' . escapeshellarg($this->ssh_key_path));
+        // Create a secure and consistent path in the system temp directory
+        $key_hash = md5($key);
+        $key_path = sys_get_temp_dir() . '/' . $key_hash . '.' . $server_id . '.rsa';
 
+        if (!file_exists($key_path)) {
+            // If $key is a file path, read its content
+            if (file_exists($key)) {
+                $key = file_get_contents($key, false, null, 0, filesize($key));
+            }
+
+            // Normalize line endings to Unix-style
+            $key = str_replace(["\r\n", "\r"], "\n", $key);
+
+            // Validate key format (basic sanity check)
+            if (!str_starts_with($key, '-----BEGIN') || !str_contains($key, 'PRIVATE KEY')) {
+                throw new \Exception("Invalid SSH private key format.");
+            }
+
+            // Save the key to the temp file securely
+            file_put_contents($key_path, $key);
+
+            // Set strict file permissions
+            chmod($key_path, 0600);
+
+            // Log path only, never the key content
+            Log::info("SSH private key saved to: " . $key_path);
         }
+
         $this->ssh_key_path = $key_path;
     }
 
@@ -86,7 +102,7 @@ class SSH
     protected function exec_auth_key($cmd)
     {
         exec('chmod 0600 '.$this->ssh_key_path);
-        exec('chown sail:root ' . escapeshellarg($this->ssh_key_path));
+        // exec('chown sail:root ' . escapeshellarg($this->ssh_key_path));
         $commend = "/usr/bin/ssh -p ".$this->port." -o StrictHostKeyChecking=no -i ".$this->ssh_key_path." " . $this->user . "@" . $this->host . " '( ".$cmd." )' ";
 
 //        ___debug($commend);
@@ -131,7 +147,7 @@ class SSH
     {
         //___debug(file_get_contents($source));
         exec('chmod 0600 '.$this->ssh_key_path);
-        exec('chown sail:root ' . escapeshellarg($this->ssh_key_path));
+        // exec('chown sail:root ' . escapeshellarg($this->ssh_key_path));
         $commend = "/usr/bin/scp -P ".$this->port." -r -o StrictHostKeyChecking=no -i ".$this->ssh_key_path." ".$source." " . $this->user . "@" . $this->host . ":".$target;
 //        ___debug($commend);
         if ($this->log_file != false) {
@@ -197,7 +213,7 @@ class SSH
     public function connection_test($log,$cmd="pwd") {
         // Ensure SSH key permissions are set correctly
         exec('chmod 0600 ' . escapeshellarg($this->ssh_key_path));
-        exec('chown sail:root ' . escapeshellarg($this->ssh_key_path));
+        // exec('chown sail:root ' . escapeshellarg($this->ssh_key_path));
         // Build the SSH command
         $command = "/usr/bin/ssh -p " . escapeshellarg($this->port) .
                    " -o StrictHostKeyChecking=no -i " . escapeshellarg($this->ssh_key_path) .

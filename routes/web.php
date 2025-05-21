@@ -50,6 +50,8 @@ Route::post('/update_pass', [AuthController::class, 'update_pass']);
 Route::get('/ovh/attached_additional_ip_to_vm', [Ovhcontroller::class,'attached_additional_ip_to_vm'])->name('attached_additional_ip_to_vm');
 Route::get('/ovh/additonal_ips', [Ovhcontroller::class,'get_all_additonal_ips'])->name('get_all_additonal_ips');
 
+Route::get('/ovh/check_ssh',[Ovhcontroller::class,'check_ssh']);
+
 // OVH API End
 
 Route::get('/logout', function () {

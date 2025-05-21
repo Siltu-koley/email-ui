@@ -25,5 +25,8 @@ COPY . /var/www/html
 
 
 RUN composer install
+
+
+RUN chmod 0777 -R /var/www/html/storage
 # CMD php artisan serve --host=0.0.0.0 --port=8001
 EXPOSE 8001

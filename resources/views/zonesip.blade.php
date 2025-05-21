@@ -141,8 +141,14 @@
                                 let allips = dataadditonalips.data;
                                 let ipList = '';
                                 let ipListHtml = '';
+                                console.log(allips,allips.length);
                                 if(allips.length == 0){
+                                    // alert("inside  0 data");
                                     $('.empty-address-cont').removeClass('d-none');
+                                    $('.all-address-cont').addClass('d-none');
+                                }else{
+                                    $('.all-address-cont').removeClass('d-none');
+                                    $('.empty-address-cont').addClass('d-none');
                                 }
                                 allips.forEach(function(ipaddress) {
                                     // ipListHtml += '<li>' + ipaddress.ip + '</li>';
@@ -164,7 +170,7 @@
                                 });
                                 ipListHtml += '';
 
-                                $('.all-address-cont').removeClass('d-none')
+                                // $('.all-address-cont').removeClass('d-none');
                                 $('.modal-body .all_ips_data_here').html(ipListHtml);
                             }else{
                                 $('.all-address-cont').removeClass('d-none')
@@ -182,7 +188,7 @@
 
                 $(document).on('click', '.add-ip-to-vm', function(event){
                     event.preventDefault();
-                    var attached_address = $(this).attr('data-addres');
+                    var attached_address = $(this).attr('data-address');
                     var data_id = $(this).attr('data-id');
                     $('.spinner-lodaer-'+data_id).removeClass('d-none');
                     $.ajax({
@@ -192,6 +198,7 @@
 
                             if(datastatus.status == "success"){
                                 $('.spinner-lodaer-'+data_id).addClass('d-none');
+                                alert(datastatus.message);
                             }else{
                                 $('.spinner-lodaer-'+data_id).addClass('d-none');
                                 alert("Something went wrong! Please try again");
